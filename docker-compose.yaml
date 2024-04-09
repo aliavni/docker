@@ -1,0 +1,49 @@
+version: "3.8"
+
+services:
+  db:
+    container_name: docker-postgres
+    image: postgres:16
+    ports:
+      - 5433:5432
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d postgres -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  python:
+    container_name: python
+    build:
+      context: .
+    networks:
+      - backend
+    depends_on:
+      db:
+        condition: service_healthy
+
+  trino:
+    container_name: trino
+    ports:
+      - "8080:8080"
+    image: "trinodb/trino:444"
+    volumes:
+      - ./docker/trino/etc:/usr/lib/trino/etc:ro
+      - ./docker/trino/catalog:/etc/trino/catalog
+    environment:
+      - CATALOG_MANAGEMENT=dynamic
+    networks:
+      - backend
+
+volumes:
+  pgdata:
+ 
+networks:
+  backend:
