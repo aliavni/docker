@@ -7,9 +7,8 @@ services:
     ports:
       - 5433:5432
     restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+    env_file:
+      - .env
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
@@ -28,6 +27,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    env_file:
+      - .env
 
   trino:
     container_name: trino
@@ -44,6 +45,6 @@ services:
 
 volumes:
   pgdata:
- 
+
 networks:
   backend:

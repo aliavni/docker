@@ -1,22 +1,30 @@
 import datetime
 import psycopg2
+import os
+
 
 def fun():
     now = datetime.datetime.now()
     print(now)
 
 
-if __name__ == '__main__':
-    conn = psycopg2.connect(dbname="postgres", user="postgres", password="postgres", port=5432, host="docker-postgres")
+if __name__ == "__main__":
+    conn = psycopg2.connect(
+        dbname="postgres",
+        user="postgres",
+        password=os.environ["POSTGRES_PASSWORD"],
+        port=5432,
+        host="docker-postgres",
+    )
     conn.autocommit = True
-    cursor = conn.cursor() 
+    cursor = conn.cursor()
 
     sql = """
     select * from information_schema.tables
     """
-    cursor.execute(sql) 
+    cursor.execute(sql)
     results = cursor.fetchall()
-    print(results) 
+    print(results)
 
     counter = 0
     while counter < 10:
