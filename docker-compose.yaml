@@ -18,6 +18,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
   python:
     container_name: python
     build:
@@ -40,6 +41,68 @@ services:
       - ./docker/trino/catalog:/etc/trino/catalog
     environment:
       - CATALOG_MANAGEMENT=dynamic
+    networks:
+      - backend
+
+  spark-master:
+    container_name: spark-master
+    build: ./docker/spark
+    ports:
+      - "9090:8080"
+      - "7077:7077"
+    volumes:
+       - ./apps:/opt/spark-apps
+       - ./data:/opt/spark-data
+    environment:
+      - SPARK_LOCAL_IP=spark-master
+      - SPARK_WORKLOAD=master
+    networks:
+      - backend
+  spark-worker-a:
+    build: ./docker/spark
+    env_file:
+      - .env
+    ports:
+      - "9091:8080"
+      - "7001:7000"
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_WORKLOAD=worker
+      - SPARK_LOCAL_IP=spark-worker-a
+    volumes:
+       - ./apps:/opt/spark-apps
+       - ./data:/opt/spark-data
+    networks:
+      - backend
+  spark-worker-b:
+    build: ./docker/spark
+    ports:
+      - "9092:8080"
+      - "7002:7000"
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_WORKLOAD=worker
+      - SPARK_LOCAL_IP=spark-worker-b
+    volumes:
+        - ./apps:/opt/spark-apps
+        - ./data:/opt/spark-data
+    networks:
+      - backend
+
+  jupyterlab:
+    container_name: jupyterlab
+    build: ./docker/jupyter
+    environment:
+      - JUPYTER_PORT=8088
+    volumes:
+      - ./notebooks:$LAB_HOME
+      - ./data:$LAB_HOME/data
+    env_file:
+      - .env
+    ports:
+      - "8088:8088"
     networks:
       - backend
 

@@ -1,0 +1,6 @@
+pandas==2.2.2
+jupyterlab==4.1.6
+pyspark==3.5.1
+grpcio==1.62.1
+protobuf
+grpcio-status==1.62.1
