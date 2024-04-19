@@ -50,6 +50,7 @@ services:
     ports:
       - "9090:8080"
       - "7077:7077"
+      - "10000:10000"
     volumes:
        - ./apps:/opt/spark-apps
        - ./data:/opt/spark-data
@@ -95,14 +96,14 @@ services:
     container_name: jupyterlab
     build: ./docker/jupyter
     environment:
-      - JUPYTER_PORT=8088
+      - JUPYTER_PORT=8089
     volumes:
       - ./notebooks:$LAB_HOME
       - ./data:$LAB_HOME/data
     env_file:
       - .env
     ports:
-      - "8088:8088"
+      - "8089:8089"
     networks:
       - backend
 

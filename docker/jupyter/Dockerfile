@@ -13,4 +13,6 @@ WORKDIR /home/jovyan
 
 COPY ./requirements.txt /tmp/requirements.txt
 
-RUN conda install --quiet --yes --file /tmp/requirements.txt
+RUN export DOCKER_BUILDKIT=1
+
+RUN --mount=type=cache,target=/opt/conda/pkgs conda install --quiet --yes --file /tmp/requirements.txt

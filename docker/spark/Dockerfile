@@ -4,7 +4,7 @@ FROM openjdk:11.0.11-jre-slim-buster as builder
 # Add Dependencies for PySpark and Python 3.11
 RUN apt-get update && apt-get install -y curl vim wget software-properties-common ssh net-tools ca-certificates \
     build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev \
-    libffi-dev libsqlite3-dev libbz2-dev
+    libffi-dev libsqlite3-dev libbz2-dev rsync
 
 # Fix the value of PYTHONHASHSEED
 # Note: this is needed when you use Python 3.3 or greater
@@ -44,7 +44,7 @@ SPARK_WORKER_PORT=7000 \
 SPARK_MASTER="spark://spark-master:7077" \
 SPARK_WORKLOAD="master"
 
-EXPOSE 8080 7077 6066
+EXPOSE 8080 7077 6066 10000
 
 RUN mkdir -p $SPARK_LOG_DIR && \
 touch $SPARK_MASTER_LOG && \
