@@ -13,7 +13,7 @@ jobs:
         ENV_FILE_CONTENTS: ${{ secrets.ENV_FILE_CONTENTS }}
       run: |
         touch .env
-        echo $POSTGRES_USER >> .env
+        echo {$POSTGRES_USER} >> .env
         echo "working dir
         pwd
         echo " env file contents"
