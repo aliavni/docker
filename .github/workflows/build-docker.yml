@@ -19,7 +19,7 @@ jobs:
         envkey_SPARK_WORKER_MEMORY: 5G
         envkey_SPARK_DRIVER_MEMORY: 5G
         envkey_SPARK_EXECUTOR_MEMORY: 5G
-        directory: /home/runner/work/docker/docker/
+        directory: ./docker/
         file_name: .env
         fail_on_empty: true
         sort_keys: false
