@@ -20,4 +20,5 @@ jobs:
       run: |
         touch /home/runner/work/docker/docker/.env && \
         echo ${ENV_FILE_CONTENTS} >> /home/runner/work/docker/docker/.env && \
+        source /home/runner/work/docker/docker/.env && \
         docker compose --env-file /home/runner/work/docker/docker/.env up -d --build
