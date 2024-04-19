@@ -1,4 +1,4 @@
-version: "3.8"
+name: docker
 
 services:
   db:
@@ -61,6 +61,7 @@ services:
       - backend
   spark-worker-a:
     build: ./docker/spark
+    container_name: spark-worker-a
     env_file:
       - .env
     ports:
@@ -78,6 +79,7 @@ services:
       - backend
   spark-worker-b:
     build: ./docker/spark
+    container_name: spark-worker-b
     ports:
       - "9092:8080"
       - "7002:7000"
