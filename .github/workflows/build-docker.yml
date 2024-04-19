@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Build docker
 
 on: [push]
 
@@ -12,15 +12,9 @@ jobs:
       env:
         ENV_FILE_CONTENTS: ${{ secrets.ENV_FILE_CONTENTS }}
       run: |
-        pwd && \
         touch /home/runner/work/docker/docker/.env && \
-        echo ${ENV_FILE_CONTENTS} >> /home/runner/work/docker/docker/.env && \
-        cat /home/runner/work/docker/docker/.env && \
-        ls -al /home/runner/work/docker
+        echo ${ENV_FILE_CONTENTS} >> /home/runner/work/docker/docker/.env
 
     - uses: actions/checkout@v3
     - name: Build the docker-compose stack
-      run: docker-compose up -d --env-file /home/runner/work/docker/docker/.env
-
-    - name: Check running containers
-      run: docker ps -a
+      run: docker-compose up -d --build --env-file /home/runner/work/docker/docker/.env
