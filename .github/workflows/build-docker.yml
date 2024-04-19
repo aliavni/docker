@@ -1,0 +1,24 @@
+name: Build docker
+
+on: [push]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+#    - name: Create .env file
+#      run: |
+#        touch /home/runner/work/docker/docker/.env && \
+#        echo ${ENV_FILE_CONTENTS} >> /home/runner/work/docker/docker/.env
+
+    - uses: actions/checkout@v3
+    - name: Build the docker-compose stack
+      env:
+        ENV_FILE_CONTENTS: ${{ secrets.ENV_FILE_CONTENTS }}
+        LAB_HOME: /home/jovyan
+      run: |
+        touch /home/runner/work/docker/docker/.env && \
+        echo ${ENV_FILE_CONTENTS} >> /home/runner/work/docker/docker/.env && \
+        docker compose --env-file /home/runner/work/docker/docker/.env up -d --build
