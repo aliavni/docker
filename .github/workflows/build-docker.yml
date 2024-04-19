@@ -6,22 +6,28 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    env:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-      LAB_HOME: /home/jovyan
-
-      SPARK_MASTER: spark://spark-master:7077
-      SPARK_WORKER_CORES: 4
-      SPARK_WORKER_MEMORY: 5G
-      SPARK_DRIVER_MEMORY: 5G
-      SPARK_EXECUTOR_MEMORY: 5G
-
 
     steps:
-      - uses: actions/checkout@v3
-      - name: Build the docker-compose stack
-        run: docker-compose up -d
+    - name: Make envfile
+      uses: SpicyPizza/create-envfile@v2.0
+      with:
+        envkey_POSTGRES_USER: postgres
+        envkey_POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        envkey_LAB_HOME: /home/jovyan
+        envkey_SPARK_MASTER: spark://spark-master:7077
+        envkey_SPARK_WORKER_CORES: 4
+        envkey_SPARK_WORKER_MEMORY: 5G
+        envkey_SPARK_DRIVER_MEMORY: 5G
+        envkey_SPARK_EXECUTOR_MEMORY: 5G
 
-      - name: Check running containers
-        run: docker ps -a
+        directory: .
+        file_name: .env
+        fail_on_empty: true
+        sort_keys: false
+
+    - uses: actions/checkout@v3
+    - name: Build the docker-compose stack
+      run: docker-compose up -d
+
+    - name: Check running containers
+      run: docker ps -a
