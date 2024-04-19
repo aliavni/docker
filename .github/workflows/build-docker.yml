@@ -8,13 +8,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Create .env file
-      env:
-        ENV_FILE_CONTENTS: ${{ secrets.ENV_FILE_CONTENTS }}
-      run: |
-        touch /home/runner/work/docker/docker/.env && \
-        echo ${ENV_FILE_CONTENTS} >> /home/runner/work/docker/docker/.env
+#    - name: Create .env file
+#      env:
+#        ENV_FILE_CONTENTS: ${{ secrets.ENV_FILE_CONTENTS }}
+#      run: |
+#        touch /home/runner/work/docker/docker/.env && \
+#        echo ${ENV_FILE_CONTENTS} >> /home/runner/work/docker/docker/.env
 
     - uses: actions/checkout@v3
     - name: Build the docker-compose stack
-      run: docker compose --env-file /home/runner/work/docker/docker/.env up -d --build
+      run: |
+        touch /home/runner/work/docker/docker/.env && \
+        echo ${ENV_FILE_CONTENTS} >> /home/runner/work/docker/docker/.env && \
+        docker compose --env-file /home/runner/work/docker/docker/.env up -d --build
