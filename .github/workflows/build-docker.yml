@@ -9,14 +9,14 @@ jobs:
 
     steps:
 #    - name: Create .env file
-#      env:
-#        ENV_FILE_CONTENTS: ${{ secrets.ENV_FILE_CONTENTS }}
 #      run: |
 #        touch /home/runner/work/docker/docker/.env && \
 #        echo ${ENV_FILE_CONTENTS} >> /home/runner/work/docker/docker/.env
 
     - uses: actions/checkout@v3
     - name: Build the docker-compose stack
+      env:
+        ENV_FILE_CONTENTS: ${{ secrets.ENV_FILE_CONTENTS }}
       run: |
         touch /home/runner/work/docker/docker/.env && \
         echo ${ENV_FILE_CONTENTS} >> /home/runner/work/docker/docker/.env && \
