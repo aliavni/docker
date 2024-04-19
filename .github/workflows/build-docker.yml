@@ -16,7 +16,7 @@ jobs:
         touch /home/runner/work/docker/docker/.env && \
         echo ${ENV_FILE_CONTENTS} >> /home/runner/work/docker/docker/.env && \
         cat /home/runner/work/docker/docker/.env && \
-        ls -al /home/runner/work/
+        ls -al /home/runner/work/docker
 
     - uses: actions/checkout@v3
     - name: Build the docker-compose stack
