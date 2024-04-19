@@ -1,6 +1,7 @@
-pandas==2.2.2
-jupyterlab==4.1.6
-pyspark==3.5.1
+delta-spark==3.0.0
 grpcio==1.62.1
-protobuf
 grpcio-status==1.62.1
+jupyterlab==4.1.6
+pandas==2.2.2
+protobuf==4.25.3
+pyspark==3.5.1
