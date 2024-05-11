@@ -9,6 +9,7 @@
 - [Trino](#trino)
 - [Spark](#spark)
 - [Thrift](#thrift)
+- [ScyllaDB](#scylladb)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -84,3 +85,9 @@ insert into hive_example partition(c=1) values('a', 1), ('a', 2),('b',3);
 select count(distinct a) from hive_example;
 select sum(b) from hive_example;
 ```
+
+## ScyllaDB
+
+[open-source-nosql-database](https://www.scylladb.com/open-source-nosql-database/)
+
+[docker-compose](https://github.com/scylladb/scylla-code-samples/blob/master/mms/docker-compose.yml)
