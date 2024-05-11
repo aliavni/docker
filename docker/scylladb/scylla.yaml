@@ -194,7 +194,7 @@ rpc_address: localhost
 rpc_port: 9160
 
 # port for REST API server
-api_port: 10000
+api_port: 20000
 
 # IP for the REST API server
 api_address: 127.0.0.1

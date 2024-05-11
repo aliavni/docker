@@ -115,9 +115,11 @@ services:
     restart: always
     command: --seeds=scylla-1,scylla-2,scylla-3 --smp 1 --memory 750M --overprovisioned 1
     volumes:
-      - ./data/scylla:/var/lib/scylla
+      - ./data/scylla:/var/lib/scylla/data
       - ./docker/scylladb/scylla.yaml:/etc/scylla/scylla.yaml
       - ./docker/scylladb/cassandra-rackdc.properties.dc1:/etc/scylla/cassandra-rackdc.properties
+    ports:
+      - "19042:19042"
     networks:
       - backend
 
