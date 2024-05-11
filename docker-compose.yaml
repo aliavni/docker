@@ -109,6 +109,44 @@ services:
     networks:
       - backend
 
+  scylla-1:
+    build: ./docker/scylladb
+    container_name: scylla-1
+    restart: always
+    command: --seeds=scylla-1,scylla-2,scylla-3 --smp 1 --memory 750M --overprovisioned 1
+    volumes:
+      - ./data/scylla:/var/lib/scylla/data
+      - ./docker/scylladb/scylla.yaml:/etc/scylla/scylla.yaml
+      - ./docker/scylladb/cassandra-rackdc.properties.dc1:/etc/scylla/cassandra-rackdc.properties
+    ports:
+      - "19042:19042"
+    networks:
+      - backend
+
+  scylla-2:
+    build: ./docker/scylladb
+    container_name: scylla-2
+    restart: always
+    volumes:
+      - ./data/scylla:/var/lib/scylla
+      - ./docker/scylladb/scylla.yaml:/etc/scylla/scylla.yaml
+      - ./docker/scylladb/cassandra-rackdc.properties.dc1:/etc/scylla/cassandra-rackdc.properties
+    command: --seeds=scylla-1,scylla-2,scylla-3 --smp 1 --memory 750M --overprovisioned 1
+    networks:
+      - backend
+
+  scylla-3:
+    build: ./docker/scylladb
+    container_name: scylla-3
+    restart: always
+    volumes:
+      - ./data/scylla:/var/lib/scylla
+      - ./docker/scylladb/scylla.yaml:/etc/scylla/scylla.yaml
+      - ./docker/scylladb/cassandra-rackdc.properties.dc1:/etc/scylla/cassandra-rackdc.properties
+    command: --seeds=scylla-1,scylla-2,scylla-3 --smp 1 --memory 750M --overprovisioned 1
+    networks:
+      - backend
+
 volumes:
   pgdata:
 

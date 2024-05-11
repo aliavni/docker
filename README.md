@@ -9,6 +9,11 @@
 - [Trino](#trino)
 - [Spark](#spark)
 - [Thrift](#thrift)
+- [ScyllaDB](#scylladb)
+  - [Connect to cqlsh](#connect-to-cqlsh)
+  - [Create keyspace](#create-keyspace)
+  - [Use keyspace and create table](#use-keyspace-and-create-table)
+  - [Insert data](#insert-data)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -83,4 +88,39 @@ alter table hive_example add partition(c=1);
 insert into hive_example partition(c=1) values('a', 1), ('a', 2),('b',3);
 select count(distinct a) from hive_example;
 select sum(b) from hive_example;
+```
+
+## ScyllaDB
+
+### Connect to cqlsh
+
+```bash
+docker exec -it scylla-1 cqlsh
+```
+
+### Create keyspace
+
+```cassandraql
+CREATE KEYSPACE data
+WITH replication = {'class': 'SimpleStrategy', 'replication_factor' : 3};
+```
+
+### Use keyspace and create table
+
+```cassandraql
+USE data;
+
+CREATE TABLE data.users (
+    user_id uuid PRIMARY KEY,
+    first_name text,
+    last_name text,
+    age int
+);
+```
+
+### Insert data
+
+```cassandraql
+INSERT INTO data.users (user_id, first_name, last_name, age)
+  VALUES (123e4567-e89b-12d3-a456-426655440000, 'Polly', 'Partition', 77);
 ```
