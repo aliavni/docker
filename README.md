@@ -14,6 +14,10 @@
   - [Create keyspace](#create-keyspace)
   - [Use keyspace and create table](#use-keyspace-and-create-table)
   - [Insert data](#insert-data)
+- [Kafka](#kafka)
+  - [Create topic](#create-topic)
+  - [Kafka producer](#kafka-producer)
+  - [Kafka consumer](#kafka-consumer)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -124,3 +128,19 @@ CREATE TABLE data.users (
 INSERT INTO data.users (user_id, first_name, last_name, age)
   VALUES (123e4567-e89b-12d3-a456-426655440000, 'Polly', 'Partition', 77);
 ```
+
+## Kafka
+
+### Create topic
+
+```bash
+docker exec -it kafka kafka-topics.sh --create --topic test --bootstrap-server 127.0.0.1:9092
+```
+
+### Kafka producer
+
+See [kafka_producer.ipynb](notebooks/kafka_producer.ipynb)
+
+### Kafka consumer
+
+[kafka_consumer.ipynb](notebooks/kafka_consumer.ipynb)
