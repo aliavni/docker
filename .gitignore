@@ -1,4 +1,5 @@
 .env
+__pycache__
 
 data/
 
@@ -10,3 +11,5 @@ notebooks/.ivy2
 notebooks/.jupyter
 notebooks/.local
 notebooks/.npm
+
+airflow/logs/
