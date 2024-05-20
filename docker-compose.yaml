@@ -65,7 +65,7 @@ services:
     env_file:
       - .env
     ports:
-      - "9091:8080"
+      - "10091:8080"
       - "7001:7000"
     depends_on:
       - spark-master
@@ -81,7 +81,7 @@ services:
     build: ./docker/spark
     container_name: spark-worker-b
     ports:
-      - "9092:8080"
+      - "10092:8080"
       - "7002:7000"
     depends_on:
       - spark-master
@@ -146,6 +146,18 @@ services:
     command: --seeds=scylla-1,scylla-2,scylla-3 --smp 1 --memory 750M --overprovisioned 1
     networks:
       - backend
+
+  kafka:
+    container_name: kafka
+    build: ./docker/kafka
+    volumes:
+      - ./data/kafka:/bitnami/kafka
+    networks:
+      - backend
+    env_file:
+      - .env
+    ports:
+      - '9092:9092'
 
 volumes:
   pgdata:
