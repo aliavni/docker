@@ -1,3 +1,10 @@
 -c https://raw.githubusercontent.com/apache/airflow/constraints-2.9.1/constraints-3.12.txt
-duckdb==0.10.2
-polars==0.20.26
+apache-airflow-providers-apache-spark==4.7.2
+plyvel==1.5.1
+
+# duckdb==0.10.2
+# polars==0.20.26
+# pyspark==3.5.1
+# apache-airflow-providers-slack
+# deltalake
+# delta-spark

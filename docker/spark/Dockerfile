@@ -9,12 +9,13 @@ RUN apt-get update && apt-get install -y curl vim wget software-properties-commo
 # Fix the value of PYTHONHASHSEED
 # Note: this is needed when you use Python 3.3 or greater
 ENV SPARK_VERSION=3.5.1 \
-HADOOP_VERSION=3 \
+HADOOP_MAJOR_VERSION=3 \
+HADOOP_VERSION=3.4.0 \
 SPARK_HOME=/opt/spark \
 PYTHONHASHSEED=1
 
 # Download and uncompress spark from the apache archive
-RUN wget --no-verbose -O apache-spark.tgz "https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz" \
+RUN wget --no-verbose -O apache-spark.tgz "https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_MAJOR_VERSION}.tgz" \
 && mkdir -p /opt/spark \
 && tar -xf apache-spark.tgz -C /opt/spark --strip-components=1 \
 && rm apache-spark.tgz
@@ -28,6 +29,20 @@ RUN wget https://www.python.org/ftp/python/3.11.5/Python-3.11.5.tgz \
     && make -j$(nproc) \
     && make altinstall
 RUN update-alternatives --install "/usr/bin/python" "python" "$(which python3.11)" 1
+RUN update-alternatives --install "/usr/bin/python3" "python3" "$(which python3.11)" 1
+
+RUN rm -rf /tmp/Python-3.11.5
+RUN rm /tmp/Python-3.11.5.tgz
+
+
+RUN apt-get install -y pdsh openssh-client openssh-server
+
+RUN ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
+RUN cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+RUN chmod 0600 ~/.ssh/authorized_keys
+
+COPY ssh/config /root/.ssh/config
+RUN service ssh start
 
 # Apache spark environment
 FROM builder as apache-spark
@@ -41,7 +56,7 @@ SPARK_MASTER_LOG=/opt/spark/logs/spark-master.out \
 SPARK_WORKER_LOG=/opt/spark/logs/spark-worker.out \
 SPARK_WORKER_WEBUI_PORT=8080 \
 SPARK_WORKER_PORT=7000 \
-SPARK_MASTER="spark://spark-master:7077" \
+SPARK_MASTER="spark-master:7077" \
 SPARK_WORKLOAD="master"
 
 EXPOSE 8080 7077 6066 10000
@@ -54,5 +69,11 @@ ln -sf /dev/stdout $SPARK_WORKER_LOG
 
 COPY start-spark.sh /
 RUN wget -P /opt/spark/jars https://jdbc.postgresql.org/download/postgresql-42.7.3.jar
+
+RUN ln -sf /bin/bash /bin/sh
+RUN echo "alias ls='ls --color=auto'" >> /root/.bashrc
+RUN echo "alias l='ls -lah'" >> /root/.bashrc
+RUN echo "alias ll='ls -lh'" >> /root/.bashrc
+RUN echo "alias la='ls -lAh'" >> /root/.bashrc
 
 CMD ["/bin/bash", "/start-spark.sh"]
