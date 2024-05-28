@@ -36,23 +36,27 @@ RUN rm /tmp/Python-3.11.5.tgz
 
 # Hadoop
 ENV HADOOP_HOME=/opt/hadoop
+ENV HADOOP_USER_HOME=/home/hadoop
 ENV HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
-RUN mkdir -p /home/hadoop/
+RUN mkdir -p $HADOOP_USER_HOME
+RUN mkdir -p $HADOOP_HOME
 RUN groupadd hadoop
-RUN useradd -d /home/hadoop -g hadoop -m hadoop --shell /bin/bash
+RUN useradd -d $HADOOP_USER_HOME -g hadoop -m hadoop --shell /bin/bash
 
 RUN apt-get install -y pdsh openssh-client openssh-server
 
-RUN mkdir /home/hadoop/.ssh
-RUN ssh-keygen -t rsa -P '' -f /home/hadoop/.ssh/id_rsa
-RUN cat /home/hadoop/.ssh/id_rsa.pub >> /home/hadoop/.ssh/authorized_keys
-RUN chmod 0600 /home/hadoop/.ssh/authorized_keys
+RUN mkdir $HADOOP_USER_HOME/.ssh
+RUN ssh-keygen -t rsa -P '' -f $HADOOP_USER_HOME/.ssh/id_rsa
+RUN cat $HADOOP_USER_HOME/.ssh/id_rsa.pub >> $HADOOP_USER_HOME/.ssh/authorized_keys
+RUN chmod 0600 $HADOOP_USER_HOME/.ssh/authorized_keys
 
-COPY ssh/config /home/hadoop/.ssh/config
+COPY ssh/config $HADOOP_USER_HOME/.ssh/config
 RUN service ssh start
 
 RUN chown -R hadoop:hadoop $HADOOP_HOME
-RUN chown -R hadoop:hadoop /home/hadoop
+RUN chown -R hadoop:hadoop $HADOOP_USER_HOME
+RUN mkdir -p /opt/spark-apps && chown -R hadoop:hadoop /opt/spark-apps
+RUN mkdir -p /opt/spark-data && chown -R hadoop:hadoop /opt/spark-data
 
 USER hadoop
 ENV JAVA_HOME=/usr/local/openjdk-11
@@ -100,9 +104,9 @@ ln -sf /dev/stdout $SPARK_WORKER_LOG
 COPY start-spark.sh /
 RUN wget -P /opt/spark/jars https://jdbc.postgresql.org/download/postgresql-42.7.3.jar
 
-RUN echo "alias ls='ls --color=auto'" >> /home/hadoop/.bashrc
-RUN echo "alias l='ls -lah'" >> /home/hadoop/.bashrc
-RUN echo "alias ll='ls -lh'" >> /home/hadoop/.bashrc
-RUN echo "alias la='ls -lAh'" >> /home/hadoop/.bashrc
+RUN echo "alias ls='ls --color=auto'" >> $HADOOP_USER_HOME/.bashrc
+RUN echo "alias l='ls -lah'" >> $HADOOP_USER_HOME/.bashrc
+RUN echo "alias ll='ls -lh'" >> $HADOOP_USER_HOME/.bashrc
+RUN echo "alias la='ls -lAh'" >> $HADOOP_USER_HOME/.bashrc
 
 CMD ["/bin/bash", "/start-spark.sh"]
