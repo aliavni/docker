@@ -2,6 +2,7 @@
 __pycache__
 
 data/
+logs/
 
 notebooks/.cache
 notebooks/.conda

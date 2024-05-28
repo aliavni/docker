@@ -20,7 +20,6 @@ x-airflow-common:
   networks:
     - backend
 
-
 services:
   db:
     container_name: docker-postgres
@@ -69,12 +68,15 @@ services:
     container_name: spark-master
     build: ./docker/spark
     ports:
-      - "9090:8080"
+      - "4040:4040"
+      - "6066:6066"
       - "7077:7077"
+      - "9090:8080"
+      - "9870:9870"
       - "10000:10000"
     volumes:
-       - ./apps:/opt/spark-apps
-       - ./data:/opt/spark-data
+       - ./spark-apps:/opt/spark-apps
+       - ./data/spark-data:/opt/spark-data
     environment:
       - SPARK_LOCAL_IP=spark-master
       - SPARK_WORKLOAD=master
@@ -83,6 +85,10 @@ services:
   spark-worker-a:
     build: ./docker/spark
     container_name: spark-worker-a
+    deploy:
+      resources:
+        limits:
+          memory: 10GB
     env_file:
       - .env
     ports:
@@ -94,13 +100,17 @@ services:
       - SPARK_WORKLOAD=worker
       - SPARK_LOCAL_IP=spark-worker-a
     volumes:
-       - ./apps:/opt/spark-apps
-       - ./data:/opt/spark-data
+       - ./spark-apps:/opt/spark-apps
+       - ./data/spark-data:/opt/spark-data
     networks:
       - backend
   spark-worker-b:
     build: ./docker/spark
     container_name: spark-worker-b
+    deploy:
+      resources:
+        limits:
+          memory: 10GB
     ports:
       - "10092:8080"
       - "7002:7000"
@@ -110,8 +120,8 @@ services:
       - SPARK_WORKLOAD=worker
       - SPARK_LOCAL_IP=spark-worker-b
     volumes:
-        - ./apps:/opt/spark-apps
-        - ./data:/opt/spark-data
+       - ./spark-apps:/opt/spark-apps
+       - ./data/spark-data:/opt/spark-data
     networks:
       - backend
 
@@ -232,6 +242,12 @@ services:
   airflow-worker:
     <<: *airflow-common
     command: celery worker
+    ports:
+      - "8793:8793"
+    deploy:
+      resources:
+        limits:
+          memory: 10GB
     healthcheck:
       # yamllint disable rule:line-length
       test:
@@ -254,6 +270,8 @@ services:
   airflow-triggerer:
     <<: *airflow-common
     command: triggerer
+    ports:
+      - "8794:8794"
     healthcheck:
       test: ["CMD-SHELL", 'airflow jobs check --job-type TriggererJob --hostname "$${HOSTNAME}"']
       interval: 30s
