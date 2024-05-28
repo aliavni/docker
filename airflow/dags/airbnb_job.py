@@ -4,13 +4,16 @@ import pandas as pd
 import argparse
 
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--url", dest="url", type=str, help="Inside Airbnb data url")
-args = parser.parse_args()
+def get_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--url", dest="url", type=str, help="Inside Airbnb data url")
+    return parser.parse_args()
+
 
 spark = SparkSession.builder.appName("airbnb").getOrCreate()
 sc = spark.sparkContext
 
+args = get_args()
 df = spark.createDataFrame(pd.read_csv(args.url))
 
 print(f"# of rows: {df.count()}")
