@@ -1,13 +1,17 @@
 from pyspark.sql import SparkSession
 import pandas as pd
 
+import argparse
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--url", dest="url", type=str, help="Inside Airbnb data url")
+args = parser.parse_args()
+
 spark = SparkSession.builder.appName("airbnb").getOrCreate()
 sc = spark.sparkContext
 
-url = "https://data.insideairbnb.com/united-states/ma/boston/2024-03-24/data/listings.csv.gz"
-
-df = spark.createDataFrame(pd.read_csv(url))
+df = spark.createDataFrame(pd.read_csv(args.url))
 
 print(f"# of rows: {df.count()}")
-
 df.show(20)
