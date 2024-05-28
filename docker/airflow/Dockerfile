@@ -1,4 +1,4 @@
-FROM apache/airflow:2.9.1-python3.12
+FROM apache/airflow:2.9.1-python3.11
 
 USER root
 RUN apt-get update && apt-get install -y curl wget vim
@@ -26,4 +26,14 @@ RUN wget --no-verbose -O apache-spark.tgz "https://archive.apache.org/dist/spark
 COPY requirements.txt /tmp/requirements.txt
 RUN pip install -r /tmp/requirements.txt
 
-ENV PYSPARK_PYTHON=/usr/bin/python3
+USER root
+
+COPY requirements_spark.txt /tmp/requirements_spark.txt
+RUN cd /usr/local \
+    && python -m venv pyspark_venv \
+    && . pyspark_venv/bin/activate \
+    && pip install -r /tmp/requirements_spark.txt
+
+USER airflow
+
+ENV PYSPARK_PYTHON=/usr/local/pyspark_venv/bin/python

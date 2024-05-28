@@ -34,15 +34,45 @@ RUN update-alternatives --install "/usr/bin/python3" "python3" "$(which python3.
 RUN rm -rf /tmp/Python-3.11.5
 RUN rm /tmp/Python-3.11.5.tgz
 
+# Hadoop
+ENV HADOOP_HOME=/opt/hadoop
+ENV HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
+RUN mkdir -p /home/hadoop/
+RUN groupadd hadoop
+RUN useradd -d /home/hadoop -g hadoop -m hadoop --shell /bin/bash
 
 RUN apt-get install -y pdsh openssh-client openssh-server
 
-RUN ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
-RUN cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
-RUN chmod 0600 ~/.ssh/authorized_keys
+RUN mkdir /home/hadoop/.ssh
+RUN ssh-keygen -t rsa -P '' -f /home/hadoop/.ssh/id_rsa
+RUN cat /home/hadoop/.ssh/id_rsa.pub >> /home/hadoop/.ssh/authorized_keys
+RUN chmod 0600 /home/hadoop/.ssh/authorized_keys
 
-COPY ssh/config /root/.ssh/config
+COPY ssh/config /home/hadoop/.ssh/config
 RUN service ssh start
+
+RUN chown -R hadoop:hadoop $HADOOP_HOME
+RUN chown -R hadoop:hadoop /home/hadoop
+
+USER hadoop
+ENV JAVA_HOME=/usr/local/openjdk-11
+USER root
+COPY requirements.txt /tmp/requirements.txt
+
+ENV PATH=/opt/spark/bin:$PATH
+
+RUN chown -R hadoop:hadoop /opt/spark
+RUN ln -sf /bin/bash /bin/sh
+
+# Venv
+RUN cd /usr/local \
+    && python -m venv pyspark_venv \
+    && . pyspark_venv/bin/activate \
+    && pip install -r /tmp/requirements.txt
+
+WORKDIR /opt/spark
+
+USER hadoop
 
 # Apache spark environment
 FROM builder as apache-spark
@@ -70,10 +100,9 @@ ln -sf /dev/stdout $SPARK_WORKER_LOG
 COPY start-spark.sh /
 RUN wget -P /opt/spark/jars https://jdbc.postgresql.org/download/postgresql-42.7.3.jar
 
-RUN ln -sf /bin/bash /bin/sh
-RUN echo "alias ls='ls --color=auto'" >> /root/.bashrc
-RUN echo "alias l='ls -lah'" >> /root/.bashrc
-RUN echo "alias ll='ls -lh'" >> /root/.bashrc
-RUN echo "alias la='ls -lAh'" >> /root/.bashrc
+RUN echo "alias ls='ls --color=auto'" >> /home/hadoop/.bashrc
+RUN echo "alias l='ls -lah'" >> /home/hadoop/.bashrc
+RUN echo "alias ll='ls -lh'" >> /home/hadoop/.bashrc
+RUN echo "alias la='ls -lAh'" >> /home/hadoop/.bashrc
 
 CMD ["/bin/bash", "/start-spark.sh"]
