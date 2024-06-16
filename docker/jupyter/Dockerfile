@@ -15,4 +15,5 @@ COPY ./requirements.txt /tmp/requirements.txt
 
 RUN export DOCKER_BUILDKIT=1
 
-RUN --mount=type=cache,target=/opt/conda/pkgs conda install --quiet --yes --file /tmp/requirements.txt
+RUN conda install -y -c conda-forge mamba
+RUN mamba install -y --file /tmp/requirements.txt
