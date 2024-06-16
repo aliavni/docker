@@ -1,11 +1,11 @@
-delta-spark==3.0.0
-deltalake==0.17.4
+delta-spark
+deltalake
 # duckdb_engine==0.12.0
-grpcio==1.62.1
-grpcio-status==1.62.1
-jupyterlab==4.1.6
+grpcio
+grpcio-status
+jupyterlab==4.2.2
 kafka-python==2.0.2
 pandas==2.2.2
-polars==0.20.26
-protobuf==4.25.3
+polars==0.20.31
+protobuf
 pyspark==3.5.1
