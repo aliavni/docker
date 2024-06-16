@@ -15,5 +15,4 @@ COPY ./requirements.txt /tmp/requirements.txt
 
 RUN export DOCKER_BUILDKIT=1
 
-RUN conda install -y -c conda-forge mamba
-RUN mamba install -y --file /tmp/requirements.txt
+RUN conda install -y -c conda-forge mamba && mamba install -y --file /tmp/requirements.txt
