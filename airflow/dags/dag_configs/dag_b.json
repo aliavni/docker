@@ -1,0 +1,7 @@
+{
+  "dag_id": "auto_dag_b",
+  "start": "2024-06-14T00:00:00",
+  "schedule": null,
+  "catchup": false,
+  "task_ids": ["start", "task_1", "task_2", "end"]
+}
