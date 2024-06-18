@@ -33,10 +33,10 @@ def get_dag_configs() -> list[DagConfig]:
     """Read all dag config json files and return a list of `DagConfig`s"""
     dag_configs = []
     for file_path in glob.glob("dags/dag_configs/*.json"):
-        f = open(file_path, "r")
-        dag_config_json = json.load(f)
-        dag_config = DagConfig(**dag_config_json)
-        dag_configs.append(dag_config)
+        with open(file_path, "r") as f:
+            dag_config_json = json.load(f)
+            dag_config = DagConfig(**dag_config_json)
+            dag_configs.append(dag_config)
 
     return dag_configs
 
@@ -47,7 +47,7 @@ def add_tasks_to_dag(dag: DAG, dag_config: DagConfig) -> None:
         task = EmptyOperator(task_id=task_id, dag=dag)
 
         if previous_task is not None:
-            task.set_upstream(previous_task)
+            previous_task.set_downstream(task)
 
         previous_task = task
 
