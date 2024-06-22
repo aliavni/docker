@@ -1,5 +1,10 @@
 name: docker
 
+x-common:
+  &common
+  networks:
+    - backend
+
 x-airflow-common:
   &airflow-common
   build: ./docker/airflow
@@ -22,6 +27,7 @@ x-airflow-common:
 
 services:
   db:
+    <<: *common
     container_name: docker-postgres
     image: postgres:16
     ports:
@@ -31,8 +37,6 @@ services:
       - .env
     volumes:
       - pgdata:/var/lib/postgresql/data
-    networks:
-      - backend
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d postgres -U postgres"]
       interval: 10s
@@ -40,11 +44,10 @@ services:
       retries: 5
 
   python:
+    <<: *common
     container_name: python
     build:
       context: .
-    networks:
-      - backend
     depends_on:
       db:
         condition: service_healthy
@@ -52,6 +55,7 @@ services:
       - .env
 
   trino:
+    <<: *common
     container_name: trino
     ports:
       - "8080:8080"
@@ -61,10 +65,9 @@ services:
       - ./docker/trino/catalog:/etc/trino/catalog
     environment:
       - CATALOG_MANAGEMENT=dynamic
-    networks:
-      - backend
 
   spark-master:
+    <<: *common
     container_name: spark-master
     build: ./docker/spark
     ports:
@@ -80,9 +83,10 @@ services:
     environment:
       - SPARK_LOCAL_IP=spark-master
       - SPARK_WORKLOAD=master
-    networks:
-      - backend
+    profiles:
+      - spark
   spark-worker-a:
+    <<: *common
     build: ./docker/spark
     container_name: spark-worker-a
     deploy:
@@ -102,9 +106,10 @@ services:
     volumes:
        - ./spark-apps:/opt/spark-apps
        - ./data/spark-data:/opt/spark-data
-    networks:
-      - backend
+    profiles:
+      - spark
   spark-worker-b:
+    <<: *common
     build: ./docker/spark
     container_name: spark-worker-b
     deploy:
@@ -122,10 +127,11 @@ services:
     volumes:
        - ./spark-apps:/opt/spark-apps
        - ./data/spark-data:/opt/spark-data
-    networks:
-      - backend
+    profiles:
+      - spark
 
   jupyterlab:
+    <<: *common
     container_name: jupyterlab
     build: ./docker/jupyter
     environment:
@@ -137,10 +143,9 @@ services:
       - .env
     ports:
       - "8089:8089"
-    networks:
-      - backend
 
   scylla-1:
+    <<: *common
     build: ./docker/scylladb
     container_name: scylla-1
     restart: always
@@ -151,10 +156,11 @@ services:
       - ./docker/scylladb/cassandra-rackdc.properties.dc1:/etc/scylla/cassandra-rackdc.properties
     ports:
       - "19042:19042"
-    networks:
-      - backend
+    profiles:
+      - scylla
 
   scylla-2:
+    <<: *common
     build: ./docker/scylladb
     container_name: scylla-2
     restart: always
@@ -163,10 +169,11 @@ services:
       - ./docker/scylladb/scylla.yaml:/etc/scylla/scylla.yaml
       - ./docker/scylladb/cassandra-rackdc.properties.dc1:/etc/scylla/cassandra-rackdc.properties
     command: --seeds=scylla-1,scylla-2,scylla-3 --smp 1 --memory 750M --overprovisioned 1
-    networks:
-      - backend
+    profiles:
+      - scylla
 
   scylla-3:
+    <<: *common
     build: ./docker/scylladb
     container_name: scylla-3
     restart: always
@@ -175,22 +182,24 @@ services:
       - ./docker/scylladb/scylla.yaml:/etc/scylla/scylla.yaml
       - ./docker/scylladb/cassandra-rackdc.properties.dc1:/etc/scylla/cassandra-rackdc.properties
     command: --seeds=scylla-1,scylla-2,scylla-3 --smp 1 --memory 750M --overprovisioned 1
-    networks:
-      - backend
+    profiles:
+      - scylla
 
   kafka:
+    <<: *common
     container_name: kafka
     build: ./docker/kafka
     volumes:
       - ./data/kafka:/bitnami/kafka
-    networks:
-      - backend
     env_file:
       - .env
     ports:
       - '9092:9092'
+      - '9093:9093'
+      - '9094:9094'
 
   redis:
+    <<: *common
     container_name: redis
     # Redis is limited to 7.2-bookworm due to licencing change
     # https://redis.io/blog/redis-adopts-dual-source-available-licensing/
@@ -204,8 +213,6 @@ services:
       retries: 50
       start_period: 30s
     restart: always
-    networks:
-      - backend
 
   airflow-webserver:
     <<: *airflow-common
@@ -380,6 +387,15 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
+
+  mongo:
+    <<: *common
+    container_name: mongo
+    build: ./docker/mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/mongo:/data/db
 
 volumes:
   pgdata:

@@ -1,7 +1,7 @@
 FROM jupyter/base-notebook:python-3.11.5
 
 USER root
-RUN apt-get update && apt-get install -y openjdk-8-jdk-headless wget
+RUN apt-get update && apt-get install -y openjdk-8-jdk-headless wget telnet netcat
 
 RUN mkdir -p /opt/spark/jars
 RUN wget -P /opt/spark/jars https://jdbc.postgresql.org/download/postgresql-42.7.3.jar
