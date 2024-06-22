@@ -4,6 +4,7 @@ __pycache__
 data/
 logs/
 
+notebooks/.bash_history
 notebooks/.cache
 notebooks/.conda
 notebooks/.ipynb_checkpoints
