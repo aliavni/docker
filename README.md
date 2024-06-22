@@ -20,6 +20,7 @@
   - [Kafka consumer](#kafka-consumer)
 - [Airflow](#airflow)
   - [Slack integration](#slack-integration)
+- [Mongo](#mongo)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -157,3 +158,5 @@ update their values where necessary.
 You need to create a Slack app and setup `AIRFLOW_CONN_SLACK_API_DEFAULT`
 env variable with Slack api key. If you don't want to use this integration,
 remove the `AIRFLOW_CONN_SLACK_API_DEFAULT` variable from your `.env` file.
+
+## Mongo
