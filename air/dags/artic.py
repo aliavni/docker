@@ -36,7 +36,7 @@ def get_art_data_and_write_to_mongo():
     pieces = 0
     while True:
         logging.info(f"working on page {page}")
-        resp = requests.get(endpoint, timeout=10)
+        resp = requests.get(endpoint, timeout=60)
         resp_json = resp.json()
 
         data = resp_json.get("data", [])

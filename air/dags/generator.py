@@ -62,4 +62,7 @@ def generate_dags() -> None:
         globals()[dag.dag_id] = dag
 
 
-generate_dags()
+if __name__ == "__main__":
+    pass
+else:
+    generate_dags()
