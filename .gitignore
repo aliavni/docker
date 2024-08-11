@@ -14,4 +14,6 @@ notebooks/.jupyter
 notebooks/.local
 notebooks/.npm
 
-airflow/logs/
+air/logs/
+
+.coverage
