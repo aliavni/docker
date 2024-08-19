@@ -1,4 +1,4 @@
-FROM apache/airflow:2.9.1-python3.11
+FROM apache/airflow:2.10.0-python3.12
 
 USER root
 RUN apt-get update && apt-get install -y curl wget vim
