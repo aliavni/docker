@@ -5,5 +5,5 @@ apache-airflow-providers-mongo==4.1.2
 apache-airflow-providers-slack==8.8.0
 delta-spark==3.2.0
 deltalake==0.18.2
-polars==1.5.0
+polars==1.6.0
 pyspark==3.5.1
