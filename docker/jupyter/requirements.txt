@@ -1,6 +1,6 @@
 delta-spark
 deltalake
-duckdb==1.0.0
+duckdb==1.1.0
 # duckdb_engine==0.12.0
 grpcio
 grpcio-status
