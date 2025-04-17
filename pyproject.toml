@@ -8,5 +8,10 @@ pythonpath = "air/dags"
 exclude_dirs = ["tests"]
 
 [tool.coverage.report]
-skip_covered=true
-show_missing=true
+skip_covered = true
+show_missing = true
+
+[tool.interrogate]
+verbose = 2
+exclude = ["tests"]
+ignore-init-module = true

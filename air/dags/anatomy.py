@@ -1,10 +1,10 @@
 import os
 from datetime import datetime
 
+from airflow.decorators import dag
 from airflow.operators.python import PythonOperator
 from airflow.providers.amazon.aws.operators.s3 import S3CreateObjectOperator
 from airflow.providers.apache.spark.operators.spark_submit import SparkSubmitOperator
-from airflow.decorators import dag
 
 
 @dag(
@@ -14,9 +14,7 @@ from airflow.decorators import dag
     catchup=False,
 )
 def anatomy() -> None:
-    """
-    # Anatomy of a DAG
-    """
+    """# Anatomy of a DAG"""
     pass
 
 

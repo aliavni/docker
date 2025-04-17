@@ -1,5 +1,8 @@
+"""Example Spark DAG."""
+
 import os
 from datetime import datetime
+
 from airflow import DAG
 from airflow.providers.apache.spark.operators.spark_submit import SparkSubmitOperator
 

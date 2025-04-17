@@ -1,5 +1,6 @@
-from air.dags.utils.dag_config import DagConfig
 from pendulum import DateTime, Timezone
+
+from air.dags.utils.dag_config import DagConfig
 
 
 class TestDagConfig:
