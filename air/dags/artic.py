@@ -2,14 +2,13 @@
 Art Institute of Chicago API and storing it in a MongoDB collection."""
 
 import logging
-
 from datetime import datetime
 
 import pymongo
 import requests
 from airflow.decorators import dag
-from airflow.operators.python import PythonOperator
 from airflow.providers.mongo.hooks.mongo import MongoHook
+from airflow.providers.standard.operators.python import PythonOperator
 from pymongo import MongoClient, UpdateOne
 from pymongo.collection import Collection
 from pymongo.database import Database
@@ -22,7 +21,7 @@ from pymongo.database import Database
     catchup=False,
 )
 def artic() -> None:
-    pass
+    """This DAG fetches artwork data from the Art Institute of Chicago API."""
 
 
 def get_art_data_and_write_to_mongo():
@@ -40,7 +39,7 @@ def get_art_data_and_write_to_mongo():
     page = 1
     pieces = 0
     while True:
-        logging.info(f"working on page {page}")
+        logging.info("working on page %s", page)
         resp = requests.get(endpoint, timeout=60)
         resp_json = resp.json()
 
@@ -65,7 +64,7 @@ def get_art_data_and_write_to_mongo():
 
         page += 1
 
-    logging.info(f"Finished. Made {page} API calls. Upserted {pieces}.")
+    logging.info("Finished. Made %s API calls. Upserted %s.", page, pieces)
 
 
 dag = artic()

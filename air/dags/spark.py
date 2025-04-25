@@ -3,7 +3,7 @@
 import os
 from datetime import datetime
 
-from airflow import DAG
+from airflow.sdk import DAG
 from airflow.providers.apache.spark.operators.spark_submit import SparkSubmitOperator
 
 dag = DAG("spark_job_example", start_date=datetime(2024, 5, 20), schedule="@once")

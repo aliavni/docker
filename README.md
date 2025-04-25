@@ -8,6 +8,8 @@
 - [Jupyter](#jupyter)
 - [Trino](#trino)
 - [Spark](#spark)
+  - [Run spark containers](#run-spark-containers)
+  - [Run spark jobs](#run-spark-jobs)
 - [Thrift](#thrift)
 - [ScyllaDB](#scylladb)
   - [Connect to cqlsh](#connect-to-cqlsh)
@@ -58,6 +60,14 @@ SHOW TABLES FROM public;
 ```
 
 ## Spark
+
+### Run spark containers
+
+```bash
+docker compose --profile spark up -d
+```
+
+### Run spark jobs
 
 ```bash
 docker exec -it spark-master /bin/bash
