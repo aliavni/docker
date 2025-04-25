@@ -1,38 +1,38 @@
 # builder step used to download and configure spark environment
 FROM openjdk:11.0.11-jre-slim-buster as builder
 
-# Add Dependencies for PySpark and Python 3.11
+# Add Dependencies for PySpark
 RUN apt-get update && apt-get install -y curl vim wget software-properties-common ssh net-tools ca-certificates \
     build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev \
-    libffi-dev libsqlite3-dev libbz2-dev rsync
+    libffi-dev libsqlite3-dev libbz2-dev rsync procps
 
 # Fix the value of PYTHONHASHSEED
 # Note: this is needed when you use Python 3.3 or greater
 ENV SPARK_VERSION=3.5.1 \
-HADOOP_MAJOR_VERSION=3 \
-HADOOP_VERSION=3.4.0 \
-SPARK_HOME=/opt/spark \
-PYTHONHASHSEED=1
+    HADOOP_MAJOR_VERSION=3 \
+    HADOOP_VERSION=3.4.0 \
+    SPARK_HOME=/opt/spark \
+    PYTHONHASHSEED=1 \
+    PYTHON_VERSION=3.9.22
 
 # Download and uncompress spark from the apache archive
 RUN wget --no-verbose -O apache-spark.tgz "https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_MAJOR_VERSION}.tgz" \
-&& mkdir -p /opt/spark \
-&& tar -xf apache-spark.tgz -C /opt/spark --strip-components=1 \
-&& rm apache-spark.tgz
+    && mkdir -p /opt/spark \
+    && tar -xf apache-spark.tgz -C /opt/spark --strip-components=1 \
+    && rm apache-spark.tgz
 
-# Install Python 3.11
+# Install Python
 WORKDIR /tmp
-RUN wget https://www.python.org/ftp/python/3.11.5/Python-3.11.5.tgz \
-    && tar -xf Python-3.11.5.tgz \
-    && cd Python-3.11.5 \
+RUN wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz \
+    && tar -xf Python-${PYTHON_VERSION}.tgz \
+    && cd Python-${PYTHON_VERSION} \
     && ./configure --enable-optimizations \
     && make -j$(nproc) \
     && make altinstall
-RUN update-alternatives --install "/usr/bin/python" "python" "$(which python3.11)" 1
-RUN update-alternatives --install "/usr/bin/python3" "python3" "$(which python3.11)" 1
+RUN update-alternatives --install "/usr/bin/python" "python" "$(which python3.9)" 1
+RUN update-alternatives --install "/usr/bin/python3" "python3" "$(which python3.9)" 1
 
-RUN rm -rf /tmp/Python-3.11.5
-RUN rm /tmp/Python-3.11.5.tgz
+RUN rm -rf /tmp/Python-${PYTHON_VERSION} && rm /tmp/Python-${PYTHON_VERSION}.tgz
 
 # Hadoop
 ENV HADOOP_HOME=/opt/hadoop
@@ -72,7 +72,8 @@ RUN ln -sf /bin/bash /bin/sh
 RUN cd /usr/local \
     && python -m venv pyspark_venv \
     && . pyspark_venv/bin/activate \
-    && pip install -r /tmp/requirements.txt
+    && pip install -U uv \
+    && uv pip install -r /tmp/requirements.txt
 
 WORKDIR /opt/spark
 
@@ -84,22 +85,22 @@ FROM builder as apache-spark
 WORKDIR /opt/spark
 
 ENV SPARK_MASTER_PORT=7077 \
-SPARK_MASTER_WEBUI_PORT=8080 \
-SPARK_LOG_DIR=/opt/spark/logs \
-SPARK_MASTER_LOG=/opt/spark/logs/spark-master.out \
-SPARK_WORKER_LOG=/opt/spark/logs/spark-worker.out \
-SPARK_WORKER_WEBUI_PORT=8080 \
-SPARK_WORKER_PORT=7000 \
-SPARK_MASTER="spark-master:7077" \
-SPARK_WORKLOAD="master"
+    SPARK_MASTER_WEBUI_PORT=8080 \
+    SPARK_LOG_DIR=/opt/spark/logs \
+    SPARK_MASTER_LOG=/opt/spark/logs/spark-master.out \
+    SPARK_WORKER_LOG=/opt/spark/logs/spark-worker.out \
+    SPARK_WORKER_WEBUI_PORT=8080 \
+    SPARK_WORKER_PORT=7000 \
+    SPARK_MASTER="spark-master:7077" \
+    SPARK_WORKLOAD="master"
 
 EXPOSE 8080 7077 6066 10000
 
 RUN mkdir -p $SPARK_LOG_DIR && \
-touch $SPARK_MASTER_LOG && \
-touch $SPARK_WORKER_LOG && \
-ln -sf /dev/stdout $SPARK_MASTER_LOG && \
-ln -sf /dev/stdout $SPARK_WORKER_LOG
+    touch $SPARK_MASTER_LOG && \
+    touch $SPARK_WORKER_LOG && \
+    ln -sf /dev/stdout $SPARK_MASTER_LOG && \
+    ln -sf /dev/stdout $SPARK_WORKER_LOG
 
 COPY start-spark.sh /
 RUN wget -P /opt/spark/jars https://jdbc.postgresql.org/download/postgresql-42.7.3.jar
