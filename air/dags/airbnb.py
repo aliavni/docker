@@ -1,8 +1,12 @@
+"""This DAG demonstrates how to use the `SparkSubmitOperator` to submit a Spark
+job."""
+
 import os
 from datetime import datetime
+
+from airflow.decorators import dag
 from airflow.providers.apache.spark.operators.spark_submit import SparkSubmitOperator
 from airflow.providers.slack.notifications.slack import send_slack_notification
-from airflow.decorators import dag
 
 
 @dag(
@@ -24,8 +28,7 @@ from airflow.decorators import dag
     ],
 )
 def airbnb() -> None:
-    """
-    # Airbnb
+    """# Airbnb
 
     This dag demonstrates how to use `SparkSubmitOperator`
     """

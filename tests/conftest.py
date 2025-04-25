@@ -1,6 +1,4 @@
 import pytest
-
-
 from utils.dag_config import DagConfig
 
 

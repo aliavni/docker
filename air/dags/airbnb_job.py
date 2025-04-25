@@ -1,10 +1,11 @@
-from pyspark.sql import SparkSession
-import pandas as pd
-
 import argparse
+
+import pandas as pd
+from pyspark.sql import SparkSession
 
 
 def get_args():
+    """Get command line arguments."""
     parser = argparse.ArgumentParser()
     parser.add_argument("--url", dest="url", type=str, help="Inside Airbnb data url")
     return parser.parse_args()

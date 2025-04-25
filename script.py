@@ -1,9 +1,13 @@
+"""This script connects to a PostgreSQL database list all tables."""
+
 import datetime
-import psycopg2
 import os
+
+import psycopg2
 
 
 def fun():
+    """This function prints the current date and time."""
     now = datetime.datetime.now()
     print(now)
 

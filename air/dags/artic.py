@@ -1,10 +1,13 @@
+"""This script defines an Apache Airflow DAG for fetching artwork data from the
+Art Institute of Chicago API and storing it in a MongoDB collection."""
+
 import logging
+
 from datetime import datetime
 
 import pymongo
 import requests
 from airflow.decorators import dag
-
 from airflow.operators.python import PythonOperator
 from airflow.providers.mongo.hooks.mongo import MongoHook
 from pymongo import MongoClient, UpdateOne
@@ -23,6 +26,8 @@ def artic() -> None:
 
 
 def get_art_data_and_write_to_mongo():
+    """Fetch artwork data from the Art Institute of Chicago API, process it,
+    and upsert it into a MongoDB collection."""
     endpoint = "https://api.artic.edu/api/v1/artworks?limit=100"
 
     hook = MongoHook(mongo_conn_id="mongo_default")

@@ -1,15 +1,16 @@
+"""Auto generate dags."""
+
 import glob
 import json
 from dataclasses import asdict
 
 from airflow import DAG
 from airflow.operators.empty import EmptyOperator
-
 from utils.dag_config import DagConfig
 
 
 def auto_generate_dag(config: DagConfig) -> DAG:
-    """Generate and return a dag"""
+    """Generate and return a dag."""
 
     doc_md = f"""
     # Auto generated dag
@@ -30,7 +31,7 @@ def auto_generate_dag(config: DagConfig) -> DAG:
 
 
 def get_dag_configs() -> list[DagConfig]:
-    """Read all dag config json files and return a list of `DagConfig`s"""
+    """Read all dag config json files and return a list of `DagConfig`s."""
     dag_configs = []
     for file_path in glob.glob("dags/dag_configs/*.json"):
         with open(file_path, "r") as f:
@@ -42,6 +43,7 @@ def get_dag_configs() -> list[DagConfig]:
 
 
 def add_tasks_to_dag(dag: DAG, dag_config: DagConfig) -> None:
+    """Add tasks to a dag."""
     previous_task = None
     for task_id in dag_config.task_ids:
         task = EmptyOperator(task_id=task_id, dag=dag)
@@ -53,7 +55,7 @@ def add_tasks_to_dag(dag: DAG, dag_config: DagConfig) -> None:
 
 
 def generate_dags() -> None:
-    """Auto generate dags"""
+    """Auto generate dags."""
     dag_configs = get_dag_configs()
 
     for dag_config in dag_configs:
