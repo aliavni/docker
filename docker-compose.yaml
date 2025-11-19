@@ -191,9 +191,17 @@ services:
     env_file:
       - .env
     ports:
-      - "9092:9092"
+      - "9095:9092"
       - "9093:9093"
       - "9094:9094"
+    environment:
+      KAFKA_NODE_ID: ${KAFKA_CFG_NODE_ID}
+      KAFKA_PROCESS_ROLES: ${KAFKA_CFG_PROCESS_ROLES}
+      KAFKA_LISTENERS: ${KAFKA_CFG_LISTENERS}
+      KAFKA_ADVERTISED_LISTENERS: ${KAFKA_CFG_ADVERTISED_LISTENERS}
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: ${KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP}
+      KAFKA_CONTROLLER_QUORUM_VOTERS: ${KAFKA_CFG_CONTROLLER_QUORUM_VOTERS}
+      KAFKA_CONTROLLER_LISTENER_NAMES: ${KAFKA_CFG_CONTROLLER_LISTENER_NAMES}
 
   redis:
     <<: *common
@@ -415,7 +423,7 @@ services:
     container_name: mongo
     build: ./docker/mongo
     ports:
-      - "27017:27017"
+      - "27018:27017"
     volumes:
       - ./data/mongo:/data/db
     healthcheck:

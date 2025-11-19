@@ -8,7 +8,7 @@ class TestGenerator:
         assert dag.dag_id == dag_config.dag_id
         assert dag.start_date == dag_config.start_date
         assert dag.catchup == dag_config.catchup
-        assert dag.schedule_interval == dag_config.schedule
+        assert dag.schedule == dag_config.schedule
 
     def test_get_dag_configs(self):
         res = get_dag_configs()

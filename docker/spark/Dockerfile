@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y curl vim wget software-properties-commo
 
 # Fix the value of PYTHONHASHSEED
 # Note: this is needed when you use Python 3.3 or greater
-ENV SPARK_VERSION=3.5.1 \
+ENV SPARK_VERSION=3.5.7 \
     HADOOP_MAJOR_VERSION=3 \
     HADOOP_VERSION=3.4.0 \
     SPARK_HOME=/opt/spark \
@@ -16,7 +16,7 @@ ENV SPARK_VERSION=3.5.1 \
     PYTHON_VERSION=3.9.22
 
 # Download and uncompress spark from the apache archive
-RUN wget --no-verbose -O apache-spark.tgz "https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_MAJOR_VERSION}.tgz" \
+RUN wget --no-verbose -O apache-spark.tgz "https://dlcdn.apache.org/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_MAJOR_VERSION}.tgz" \
     && mkdir -p /opt/spark \
     && tar -xf apache-spark.tgz -C /opt/spark --strip-components=1 \
     && rm apache-spark.tgz

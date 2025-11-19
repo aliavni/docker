@@ -147,7 +147,7 @@ INSERT INTO data.users (user_id, first_name, last_name, age)
 ### Create topic
 
 ```bash
-docker exec -it kafka kafka-topics.sh --create --topic test --bootstrap-server 127.0.0.1:9092
+docker exec -it kafka kafka-topics.sh --create --topic test --bootstrap-server 127.0.0.1:9095
 ```
 
 ### Kafka producer
@@ -163,6 +163,8 @@ See [kafka_producer.ipynb](notebooks/kafka_producer.ipynb)
 Check out the `.env.template` file. Copy/paste airflow related variables and
 update their values where necessary.
 
+Airlfow UI is available at [http://localhost:8081/](http://localhost:8081/).
+
 ### Slack integration
 
 You need to create a Slack app and setup `AIRFLOW_CONN_SLACK_API_DEFAULT`
@@ -170,3 +172,5 @@ env variable with Slack api key. If you don't want to use this integration,
 remove the `AIRFLOW_CONN_SLACK_API_DEFAULT` variable from your `.env` file.
 
 ## Mongo
+
+Mongo is available on port `27018`.

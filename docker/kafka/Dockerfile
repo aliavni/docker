@@ -1,1 +1,1 @@
-FROM bitnami/kafka:3.7.0
+FROM apache/kafka:3.7.0
