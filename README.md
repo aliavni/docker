@@ -9,6 +9,7 @@
 - [Trino](#trino)
 - [Spark](#spark)
   - [Run spark containers](#run-spark-containers)
+  - [Spark UI URLs](#spark-ui-urls)
   - [Run spark jobs](#run-spark-jobs)
 - [Thrift](#thrift)
 - [ScyllaDB](#scylladb)
@@ -66,6 +67,13 @@ SHOW TABLES FROM public;
 ```bash
 docker compose --profile spark up -d
 ```
+
+### Spark UI URLs
+
+- **Spark Master UI**: <http://localhost:9090>
+- **Spark Worker A UI**: <http://localhost:10091>
+- **Spark Worker B UI**: <http://localhost:10092>
+- **Spark History Server**: <http://localhost:4040> (when a job is running)
 
 ### Run spark jobs
 

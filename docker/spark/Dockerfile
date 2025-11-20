@@ -1,5 +1,5 @@
 # builder step used to download and configure spark environment
-FROM openjdk:11.0.11-jre-slim-buster as builder
+FROM eclipse-temurin:11-jre-jammy as builder
 
 # Add Dependencies for PySpark
 RUN apt-get update && apt-get install -y curl vim wget software-properties-common ssh net-tools ca-certificates \
@@ -13,7 +13,7 @@ ENV SPARK_VERSION=3.5.7 \
     HADOOP_VERSION=3.4.0 \
     SPARK_HOME=/opt/spark \
     PYTHONHASHSEED=1 \
-    PYTHON_VERSION=3.9.22
+    PYTHON_VERSION=3.10.19
 
 # Download and uncompress spark from the apache archive
 RUN wget --no-verbose -O apache-spark.tgz "https://dlcdn.apache.org/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_MAJOR_VERSION}.tgz" \
@@ -29,8 +29,8 @@ RUN wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VER
     && ./configure --enable-optimizations \
     && make -j$(nproc) \
     && make altinstall
-RUN update-alternatives --install "/usr/bin/python" "python" "$(which python3.9)" 1
-RUN update-alternatives --install "/usr/bin/python3" "python3" "$(which python3.9)" 1
+RUN update-alternatives --install "/usr/bin/python" "python" "$(which python3.10)" 1
+RUN update-alternatives --install "/usr/bin/python3" "python3" "$(which python3.10)" 1
 
 RUN rm -rf /tmp/Python-${PYTHON_VERSION} && rm /tmp/Python-${PYTHON_VERSION}.tgz
 
@@ -43,7 +43,7 @@ RUN mkdir -p $HADOOP_HOME
 RUN groupadd hadoop
 RUN useradd -d $HADOOP_USER_HOME -g hadoop -m hadoop --shell /bin/bash
 
-RUN apt-get install -y pdsh openssh-client openssh-server
+RUN apt-get update && apt-get install -y pdsh openssh-client openssh-server
 
 RUN mkdir $HADOOP_USER_HOME/.ssh
 RUN ssh-keygen -t rsa -P '' -f $HADOOP_USER_HOME/.ssh/id_rsa
@@ -59,7 +59,7 @@ RUN mkdir -p /opt/spark-apps && chown -R hadoop:hadoop /opt/spark-apps
 RUN mkdir -p /opt/spark-data && chown -R hadoop:hadoop /opt/spark-data
 
 USER hadoop
-ENV JAVA_HOME=/usr/local/openjdk-11
+ENV JAVA_HOME=/opt/java/openjdk
 USER root
 COPY requirements.txt /tmp/requirements.txt
 
@@ -91,7 +91,7 @@ ENV SPARK_MASTER_PORT=7077 \
     SPARK_WORKER_LOG=/opt/spark/logs/spark-worker.out \
     SPARK_WORKER_WEBUI_PORT=8080 \
     SPARK_WORKER_PORT=7000 \
-    SPARK_MASTER="spark-master:7077" \
+    SPARK_MASTER="spark://spark-master:7077" \
     SPARK_WORKLOAD="master"
 
 EXPOSE 8080 7077 6066 10000

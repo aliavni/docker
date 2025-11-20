@@ -6,7 +6,7 @@ from datetime import datetime
 
 import pymongo
 import requests
-from airflow.decorators import dag
+from airflow.sdk import dag
 from airflow.providers.mongo.hooks.mongo import MongoHook
 from airflow.providers.standard.operators.python import PythonOperator
 from pymongo import MongoClient, UpdateOne
