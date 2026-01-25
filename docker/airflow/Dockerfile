@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y curl wget vim procps less default-jdk
 ENV JAVA_HOME=/usr/lib/jvm/default-java
 # ENV SPARK_WORKLOAD=submit
 
-ENV SPARK_VERSION=3.5.7 \
+ENV SPARK_VERSION=3.5.8 \
     HADOOP_VERSION=3 \
     SPARK_HOME=/opt/spark \
     PYTHONHASHSEED=1

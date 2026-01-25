@@ -80,8 +80,6 @@ services:
     environment:
       - SPARK_LOCAL_IP=spark-master
       - SPARK_WORKLOAD=master
-    profiles:
-      - spark
   spark-worker-a:
     <<: *common
     build: ./docker/spark
@@ -103,8 +101,6 @@ services:
     volumes:
       - ./spark-apps:/opt/spark-apps
       - ./data/spark-data:/opt/spark-data
-    profiles:
-      - spark
   spark-worker-b:
     <<: *common
     build: ./docker/spark
@@ -124,8 +120,6 @@ services:
     volumes:
       - ./spark-apps:/opt/spark-apps
       - ./data/spark-data:/opt/spark-data
-    profiles:
-      - spark
 
   jupyterlab:
     <<: *common
